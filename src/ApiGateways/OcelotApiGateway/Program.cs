@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Configuration;
 
 namespace OcelotApiGateway
 {
@@ -18,9 +19,14 @@ namespace OcelotApiGateway
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
+                .ConfigureLogging((hostingContext, loggingbuilder) =>
+                    {
+                        loggingbuilder.AddConfiguration(hostingContext.Configuration
+                            .GetSection("Logging"));
+                        loggingbuilder.AddConsole();
+                        loggingbuilder.AddDebug();
+                    });
+
     }
 }
